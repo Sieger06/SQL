@@ -102,16 +102,16 @@ Server [localhost]:
         INSERT 0 1
         skypro=# INSERT INTO employee (
         skypro(# first_name, last_name, gender, age)
-        skypro-# VALUES ('Daria', 'Zhelyaeva', 'w', 27);
+        skypro-# VALUES ('Irek', 'Khaibullin', 'm', 25);
         INSERT 0 1
         skypro=# SELECT * FROM employee;
         id | first_name | last_name | gender | age
         ----+------------+-----------+--------+-----
-        3 | Klim       | Chugunkin | m      |  25
-        2 | Daenerys   | Targaryen | w      |  14
-        4 | Ivan       | Ivanov    | m      |  17
-        5 | Ivan       | Ivanov    | m      |  17
-        6 | Daria      | Zhelyaeva | w      |  27
+        3 | Klim       | Chugunkin   | m      |  25
+        2 | Daenerys   | Targaryen   | w      |  14
+        4 | Ivan       | Ivanov      | m      |  17
+        5 | Ivan       | Ivanov      | m      |  17
+        6 | Irek       | Khaibullin  | m      |  25
         (5 строк)
 
         skypro=# update employee SET first_name='Peter', last_name='Petrov', gender='m', age='19' where id='4';
@@ -119,11 +119,11 @@ Server [localhost]:
         skypro=# select * from employee order by id;
         id | first_name | last_name | gender | age
         ----+------------+-----------+--------+-----
-        2 | Daenerys   | Targaryen | w      |  14
-        3 | Klim       | Chugunkin | m      |  25
-        4 | Peter      | Petrov    | m      |  19
-        5 | Ivan       | Ivanov    | m      |  17
-        6 | Daria      | Zhelyaeva | w      |  27
+        2 | Daenerys   | Targaryen   | w      |  14
+        3 | Klim       | Chugunkin   | m      |  25
+        4 | Peter      | Petrov      | m      |  19
+        5 | Ivan       | Ivanov      | m      |  17
+        6 | Irek       | Khaibullin  | m      |  25
         (5 строк)
 
         skypro=# SELECT first_name AS Имя, last_name AS Фамилия From employee;
@@ -132,7 +132,7 @@ Server [localhost]:
         Klim     | Chugunkin
         Daenerys | Targaryen
         Ivan     | Ivanov
-        Daria    | Zhelyaeva
+        Irek     | Khaibullin
         Peter    | Petrov
         (5 строк)
         ^
@@ -147,18 +147,18 @@ Server [localhost]:
         Klim     | Chugunkin
         Daenerys | Targaryen
         Ivan     | Ivanov
-        Daria    | Zhelyaeva
+        Irek     | Khaibullin
         Peter    | Petrov
         (5 строк)
 
         skypro=# SELECT * From employee order by last_name desc;
         id | first_name | last_name | gender | age
         ----+------------+-----------+--------+-----
-        6 | Daria      | Zhelyaeva | w      |  27
-        2 | Daenerys   | Targaryen | w      |  14
-        4 | Peter      | Petrov    | m      |  19
-        5 | Ivan       | Ivanov    | m      |  17
-        3 | Klim       | Chugunkin | m      |  25
+        6 | Irek       | Khaibullin  | m      |  25
+        2 | Daenerys   | Targaryen   | w      |  14
+        4 | Peter      | Petrov      | m      |  19
+        5 | Ivan       | Ivanov      | m      |  17
+        3 | Klim       | Chugunkin   | m      |  25
         (5 строк)
 
         skypro=# SELECT first_name From employee where first_name like '____%';
@@ -167,7 +167,7 @@ Server [localhost]:
         Klim
         Daenerys
         Ivan
-        Daria
+        Irek
         Peter
         (5 строк)
 
@@ -176,7 +176,7 @@ Server [localhost]:
         first_name
         ------------
         Daenerys
-        Daria
+        Irek
         Peter
         (3 строки)
 
@@ -192,17 +192,17 @@ Server [localhost]:
         skypro=# Select * from employee order by first_name;
         id | first_name | last_name | gender | age
         ----+------------+-----------+--------+-----
-        6 | Daria      | Zhelyaeva | w      |  27
-        5 | Ivan       | Ivanov    | m      |  17
-        2 | Ivan       | Ivanov    | m      |  14
-        4 | Peter      | Petrov    | m      |  19
-        3 | Peter      | Petrov    | m      |  25
+        6 | Irek       | Khaibullin  | m      |  25
+        5 | Ivan       | Ivanov      | m      |  17
+        2 | Ivan       | Ivanov      | m      |  14
+        4 | Peter      | Petrov      | m      |  19
+        3 | Peter      | Petrov      | m      |  25
         (5 строк)
 
         skypro=# select first_name as имя, sum(age) as суммарный_возраст from employee group by first_name;
         имя  | суммарный_возраст
         -------+-------------------
-        Daria |                27
+        Irek  |                25
         Ivan  |                31
         Peter |                44
         (3 строки)
@@ -226,3 +226,119 @@ Server [localhost]:
         Ivan  | Ivanov  |      17
         Peter | Petrov  |      25
         (2 строки)
+
+
+
+        *********************************
+        Работа с несколькими таблицами
+
+        skypro=# CREATE TABLE city (
+        skypro(# city_id BIGSERIAL NOT NULL PRIMARY KEY,
+        skypro(# city_name VARCHAR NOT NULL);
+        CREATE TABLE
+
+        skypro=# ALTER TABLE employee ADD city_id int;
+        ALTER TABLE
+
+        skypro=# ALTER TABLE employee ADD CONSTRAINT ciry_id FOREIGN KEY (city_id) REFERENCES city(city_id);
+        ALTER TABLE
+
+        skypro=# INSERT INTO city (city_name) VALUES ('Moscow');
+        INSERT 0 1
+        skypro=# INSERT INTO city (city_name) VALUES ('Saint Petersburg');
+        INSERT 0 1
+        skypro=# INSERT INTO city (city_name) VALUES ('Minsk');
+        INSERT 0 1
+
+
+        skypro=# UPDATE employee SET city_id = '1' where first_name = 'Ivan' and last_name = 'Ivanov';
+        UPDATE 2
+        skypro=# UPDATE employee SET city_id = '2' where first_name = 'Peter' and last_name = 'Petrov';
+        UPDATE 2
+        skypro=# UPDATE employee SET city_id = '3' where first_name = 'Irek';
+        UPDATE 1
+
+
+        skypro=# INSERT INTO city (city_name) VALUES ('Kursk');
+        INSERT 0 1
+
+
+        skypro=# SELECT employee.first_name AS имя, employee.last_name AS фамилия, city.city_name AS город
+        skypro-# FROM employee INNER JOIN city ON employee.city_id = city.city_id;
+        имя  |  фамилия  |      город
+        -------+-----------+------------------
+        Ivan  | Ivanov      | Moscow
+        Ivan  | Ivanov      | Moscow
+        Peter | Petrov      | Saint Petersburg
+        Peter | Petrov      | Saint Petersburg
+        Irek  | Khaibullin  | Minsk
+        (5 строк)
+
+
+        skypro=# SELECT employee.first_name AS имя, employee.last_name AS фамилия, city.city_name AS город
+        skypro-# FROM employee RIGHT JOIN city ON employee.city_id = city.city_id;
+        имя  |  фамилия  |      город
+        -------+-----------+------------------
+        Ivan  | Ivanov      | Moscow
+        Ivan  | Ivanov      | Moscow
+        Peter | Petrov      | Saint Petersburg
+        Peter | Petrov      | Saint Petersburg
+        Irek  | Khaibullin  | Minsk
+        |           | Kursk
+        (6 строк)
+
+
+        skypro=# INSERT INTO employee (first_name, last_name, gender, age) VALUES ('Anna', 'Annova', 'w', 54);
+        INSERT 0 1
+        skypro=# SELECT employee.first_name AS имя, employee.last_name AS фамилия, city.city_name AS город
+        skypro-# FROM employee FULL JOIN city ON employee.city_id = city.city_id;
+        имя  |  фамилия  |      город
+        -------+-----------+------------------
+        Ivan  | Ivanov      | Moscow
+        Ivan  | Ivanov      | Moscow
+        Peter | Petrov      | Saint Petersburg
+        Peter | Petrov      | Saint Petersburg
+        Irek  | Khaibullin  | Minsk
+        |           | Kursk
+        Anna  | Annova    |
+        (7 строк)
+
+
+        skypro=# SELECT employee.first_name AS имя, employee.last_name AS фамилия, city.city_name AS город
+        skypro-# FROM employee CROSS JOIN city;
+        имя  |  фамилия  |      город
+        -------+-----------+------------------
+        Ivan  | Ivanov     | Moscow
+        Ivan  | Ivanov     | Moscow
+        Peter | Petrov     | Moscow
+        Peter | Petrov     | Moscow
+        Irek  | Khaibullin | Moscow
+        Anna  | Annova     | Moscow
+        Ivan  | Ivanov     | Saint Petersburg
+        Ivan  | Ivanov     | Saint Petersburg
+        Peter | Petrov     | Saint Petersburg
+        Peter | Petrov     | Saint Petersburg
+        Irek  | Khaibullin | Saint Petersburg
+        Anna  | Annova     | Saint Petersburg
+        Ivan  | Ivanov     | Minsk
+        Ivan  | Ivanov     | Minsk
+        Peter | Petrov     | Minsk
+        Peter | Petrov     | Minsk
+        Irek  | Khaibullin | Minsk
+        Anna  | Annova     | Minsk
+        Ivan  | Ivanov     | Kursk
+        Ivan  | Ivanov     | Kursk
+        Peter | Petrov     | Kursk
+        Peter | Petrov     | Kursk
+        Irek  | Khaibullin | Kursk
+        Anna  | Annova     | Kursk
+        (24 строки)
+
+        skypro=# select first_name, min (age) from employee
+        skypro-# where first_name in
+        skypro-# (select first_name from (select first_name, count(first_name) from employee group by first_name having count(first_name)>1) as table1)
+        skypro-# group by first_name;
+        first_name | min
+        ------------+-----
+        Ivan       |  14
+        Peter      |  19
