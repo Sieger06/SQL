@@ -216,13 +216,11 @@ Server [localhost]:
 
 
 
-        skypro=# select first_name as имя, last_name as фамилия, age as возраст from employee
-        skypro-# where age=(select max(age) from employee where first_name='Ivan')
-        skypro-# or
-        skypro-# age=(select max(age) from employee where first_name='Peter')
-        skypro-# order by age;
-        имя  | фамилия | возраст
-        -------+---------+---------
-        Ivan  | Ivanov  |      17
-        Peter | Petrov  |      25
-        (2 строки)
+        skypro=# select first_name, min (age) from employee
+        skypro-# where first_name in
+        skypro-# (select first_name from (select first_name, count(first_name) from employee group by first_name having count(first_name)>1) as table1)
+        skypro-# group by first_name;
+        first_name | min
+        ------------+-----
+        Ivan       |  17
+        Peter      |  25
